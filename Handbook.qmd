@@ -1,0 +1,28 @@
+---
+title: "Mentoring Handbook"
+format: docx
+editor: visual
+---
+
+mentors <- data.frame(
+  name = c("Alice", "Bob", "Charlie"),
+  occupation = c("Data Scientist", "Software Engineer", "Statistician"),
+  interests = c("Machine Learning, Visualization, R", "Web Development, Python, SQL", "Bayesian Inference, Stan, Shiny")
+)
+ 
+
+# loop over the rows of the data frame
+for (i in 1:nrow(mentors)) {
+  # print a page break
+  cat("\\newpage\n")
+  
+  # print the name of the mentor in bold and large font
+  cat(paste0("**# ", mentors$name[i], "**\n\n"))
+  
+  # print the occupation and interests of the mentor in a table
+  knitr::kable(
+    mentors[i, c("occupation", "interests")],
+    caption = "Mentor Information",
+    align = "l"
+  )
+}
