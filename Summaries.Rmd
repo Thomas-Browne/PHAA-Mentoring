@@ -1,0 +1,152 @@
+---
+title: "Handbook"
+author: "PHAA"
+output:
+  word_document:
+    reference_docx: reference_doc.docx
+---
+
+```{r, echo=FALSE, include=FALSE}
+
+# install.packages(c('tidyverse', 'readxl'))
+
+library(tidyverse)
+library(readxl)
+
+survey_raw <- list.files(
+  path = Sys.getenv("HOME"),
+  pattern = '.xlsx', 
+  full.names = TRUE, 
+  ignore.case = FALSE,
+  all.files = FALSE)
+
+# "C:/Users/tombr/OneDrive/Desktop/2024 Mentors.xlsx"
+# tcltk::tk_choose.files(caption = 'Choose file with survey responses', multi = FALSE)
+
+survey <- readxl::read_excel(survey_raw) %>%
+  dplyr::select(
+    name = 2, 
+    bio = 3, 
+    interests = 4, 
+    skills = 5,
+    type_of_mentee = 6
+  ) %>% 
+  dplyr::filter(!is.na(name)) %>% 
+  dplyr::mutate((across(everything(), ~ ifelse(is.na(.), "[is blank]", .))),
+                interests = gsub(x = interests, 
+                                 ';', 
+                                 replacement = '\n'),
+                skills = gsub(x = skills, 
+                              ';', 
+                              replacement = '\n'),
+                type_of_mentee = gsub(x = type_of_mentee, 
+                                      ';', 
+                                      replacement = '\n')
+  ) %>% 
+  dplyr::arrange(name)
+
+```
+
+```{r, echo=FALSE}
+cat('Introduction
+Welcome to the Mentee Handbook!
+This document displays the diverse range of mentors participating in the PHAA National Mentoring 
+Program for 2023. It is designed to help you select your mentor preferences for your application as a 
+Student, Early Career or Career Transition mentee.
+As you navigate your way through you will find each mentor’s skills/area of expertise and topic area 
+of expertise summarised in visual tables. Each mentor also has a dedicated page with further 
+information including a short biography detailing their professional Career experience and the types 
+of mentees they are available to mentor.
+Summary tables 
+Click on the links below to view a visual summary all mentor skills/area of expertise and topic areas of 
+expertise (based on PHAA Special Interest Groups). The table links are ‘View only’; however, you can 
+download the table and ‘Sort/Filter by Colour’ for the skills you are seeking guidance for and/or your 
+specific Areas of interests.')
+cat("\n\n\\newpage\n\n")
+
+cat('Public Health Association 
+of Australia
+The Public Health Association of Australia (PHAA) is recognised as the principal non-government 
+organisation for public health in Australia and works to promote the health and well-being of all 
+Australians. The Association seeks better population health outcomes based on prevention, the social 
+determinants of health, and equity principles.
+Key roles of the organisation include capacity building, advocacy, and the development of policy. Core 
+to our work is an evidence base drawn from a wide range of members working in public health 
+practice, research, administration, and related fields who volunteer their time to inform policy, 
+support advocacy, and assist in capacity building within the sector.
+PHAA is a national organisation comprising around 2000 individual members and representing over 
+40 professional groups concerned with the promotion of health at a population level. Membership of 
+PHAA is open to any person who is supportive of the objectives of the Association. These are to:
+
+ • advocate for the reduction of health inequalities across Australia and international 
+communities;
+
+ • encourage research and promote knowledge relating to the problems, needs, and 
+development of public health;
+
+ • promote and provide a forum for the regular exchange of views and information;
+
+ • promote the development and education of workers in public health;
+
+ • promote, maintain and extend the interest of PHAA’s Branches, Special Interest Groups, and 
+any affiliated organisations;
+
+ • promote excellence in public health practice; and,
+
+ • advocate the objects and policies of the Association.
+Student & Young Professional’s Committee
+The Students and Young Professionals in Public Health (SYPPH) group of the PHAA is a portal for 
+students and young professionals interested in public health to maintain and expand their professional 
+networks and improve their career prospects in public health. The group is led by a dedicated 
+committee of young professionals who act as an advisory for, and oversee the activities of, students 
+and young professionals at a national level, with close links to state branch student and young 
+professional representatives.')
+cat("\n\n\\newpage\n\n")
+
+cat('PHAA National Mentoring Program
+The Public Health Association of Australia welcomes you to the PHAA National Mentoring Program. 
+This information pack has been designed to provide an introduction to the program as well as a stepby-step guide on how to participate.
+Public health works to promote greater health and well-being of individuals and communities and 
+requires a multidisciplinary approach to address and tackle these important health challenges. As a 
+broad and varied discipline, public health encompasses an enormous variety of research and 
+employment opportunities. As such, it can be difficult for people new to the field (and even for those 
+established in the area) to make decisions about work and study directions.
+The PHAA National Mentoring Program coordinates and facilitates the pairing of mentors and 
+mentees in public health. The program runs over the course of nine months and primarily functions 
+as a way to initiate a mentee-mentor relationship. The program is purposely flexible in design to allow 
+mentees and mentors to work together in identifying the mentoring needs of the mentee and develop 
+corresponding objectives for the mentee-mentor relationship over the duration of the program. The 
+program aims to build the capacity of student and early career members of the PHAA through 
+teaching, training, networking, and providing them with appropriate resources. Participants, both 
+mentees and mentors, benefit from the program in different ways, depending on what they hope to 
+get out of the process. Table 1 shows the likely benefits for mentees and mentors of the mentoring 
+program.
+
+Benefits of the Program
+
+MENTEES
+
+ • Opportunity to discuss and seek guidance and advice regarding own career ideas, helping to make more informed choices in the future
+ • Opportunity to meet a public health practitioner with experience in your area of interest
+ • Advice on resources relevant to your area/s of interest
+ • Enhanced professional development and increased confidence
+ • Exposure to new ideas and perspectives
+
+MENTORS
+ • Opportunity to facilitate the mentee’s professional growth
+ • Revitalised enthusiasm and affirmation of role as an experienced worker
+ • Further develop interpersonal and communication skills
+ • Gain experience in explaining the scope and skills of your work to a different audience
+ • Exposure to new ideas and perspectives')
+cat("\n\n\\newpage\n\n")
+
+for (i in 1:nrow(survey)) {
+  cat(paste("", survey$name[i], "\n\n"))
+  cat(paste("Bio\n\n", survey$bio[i], "\n\n"))
+  cat(paste("Areas of interest\n\n", survey$interests[i], "\n\n"))
+  cat(paste("Skills and areas of expertise\n\n", survey$skills[i], "\n\n"))
+  cat(paste("Types of mentees comfortable mentoring\n\n", survey$type_of_mentee[i], "\n\n"))
+  cat("\n\n\\newpage\n\n")
+}
+
+```
